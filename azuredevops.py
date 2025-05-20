@@ -41,7 +41,7 @@ sprint = ""
 epic_link = ""
 created_val = ""
 
-delay_properties = 10
+delay_properties = 50
 
 userInsim = ""
 userInsimPassword = ""
@@ -56,9 +56,9 @@ def connectToAzureDevOpsInsim(pbi, userInsim, userInsimPassword) :
 def recoverPBIInformation():
     # pbiTitle
     global pbiTitle
-    tools.waitLoadingPageByXPATH2(delay_properties, '/html/body/div[3]/div/div/div/div/div/div[2]/div[1]/div/div[1]/div[2]/div[2]')
+    tools.waitLoadingPageByXPATH2(delay_properties, '/html/body/div[2]/div/div/div[2]/div[2]/div[2]/div/div[1]/div/div[1]/div[2]/div[2]/div/div[1]/div/input')
     time.sleep(1)
-    pbiTitle = tools.driver.find_element(By.XPATH, '/html/body/div[3]/div/div/div/div/div/div[2]/div[1]/div/div[1]/div[2]/div[2]')
+    pbiTitle = tools.driver.find_element(By.XPATH, '/html/body/div[2]/div/div/div[2]/div[2]/div[2]/div/div[1]/div/div[1]/div[2]/div[2]/div/div[1]/div/input')
     print("pbiTitle : " + pbiTitle)
     
     # incidentNumber
@@ -80,8 +80,8 @@ def recoverPBIInformation():
 
     # description_text
     global description_text 
-    tools.waitLoadingPageByXPATH2(delay_properties, '/html/body/div[3]/div/div/div/div/div/div[2]/div[1]/div/div[2]/div[2]/div/div[2]/div/div[1]/div/div/div/div[2]/div/div/div/div/div/div[1]/div')
-    description_text = tools.driver.find_element(By.XPATH, "/html/body/div[3]/div/div/div/div/div/div[2]/div[1]/div/div[2]/div[2]/div/div[2]/div/div[1]/div/div/div/div[2]/div/div/div/div/div/div[1]/div").text.encode('utf-8', 'ignore').decode() # Convertir les bytes en str avant la concaténation
+    tools.waitLoadingPageByXPATH2(delay_properties, '/html/body/div[2]/div/div/div[2]/div[2]/div[2]/div/div[1]/div/div[2]/div[2]/div/div[2]/div/div[1]/div/div[1]/div/div[2]/div/div/div/div/div/div[1]/div')
+    description_text = tools.driver.find_element(By.XPATH, "/html/body/div[2]/div/div/div[2]/div[2]/div[2]/div/div[1]/div/div[2]/div[2]/div/div[2]/div/div[1]/div/div[1]/div/div[2]/div/div/div/div/div/div[1]/div").text.encode('utf-8', 'ignore').decode() # Convertir les bytes en str avant la concaténation
     try :
         print("description_text : " + description_text)
     except UnicodeEncodeError as ex :

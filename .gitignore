@@ -177,3 +177,6 @@ cython_debug/
 #  Azure DevOps specific template is maintained in a separate AzureDevOps.gitignore that can
 #  be found at  
 AzureDevOps
+
+# Ignore the folder Tools part of an other project 
+Tools/
