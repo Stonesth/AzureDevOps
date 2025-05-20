@@ -113,7 +113,7 @@ def recoverPBIInformation():
             user_name = user_name[0]
     print("user_name : " + user_name)
 
-    # When Jira was created
+    # When pbi was created
     global created_val
     tools.waitLoadingPageByXPATH2(delay_properties, '/html/body/div[2]/div/div/div[2]/div[2]/div[2]/div/div[1]/div/div[2]/div[2]/div/div[2]/div/div[3]/div[2]/div[5]/div/div[2]/div[1]/div/div[2]/div/div/div/div/input')
     created_val = tools.driver.find_element(By.XPATH, '/html/body/div[2]/div/div/div[2]/div[2]/div[2]/div/div[1]/div/div[2]/div[2]/div/div[2]/div/div[3]/div[2]/div[5]/div/div[2]/div[1]/div/div[2]/div/div/div/div/input').get_attribute("value")
@@ -133,3 +133,45 @@ def recoverPBIInformation():
     epic_link = tools.driver.find_element(By.XPATH, '/html/body/div[2]/div/div/div[2]/div[2]/div[2]/div/div[1]/div/div[1]/div[2]/div[2]/div/div[1]/div/input').get_attribute("value")
     print ("epic_link : " + epic_link)
 
+def createFolderPBI(pbi) :
+    if os.path.isdir(save_path + pbi) :
+        print ("Folder already exist")
+    else :
+        os.mkdir(save_path + pbi)
+
+def createFileInto(pbi, pbiTitle, description_text, path, name_of_file ) :
+    completeName = os.path.join(save_path + path, name_of_file+".txt")
+
+    if os.path.isfile(completeName) :
+        file1 = open(completeName, "a+")
+        file1.write("\n")    
+        file1.write("========================================================================================================================"+"\n")
+        file1.write(datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "\n")
+        file1.write("\n")
+    else :
+        file1 = open(completeName, "w")
+
+        file1.write("\n")    
+        file1.write("========================================================================================================================"+"\n")
+        file1.write(datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "\n")
+        file1.write("\n")
+        file1.write(pbiTitle.encode('utf-8').strip().decode() + "\n")
+        file1.write("\n")
+        try :
+            file1.write(description_text + "\n")
+        except UnicodeEncodeError :
+            file1.write("Not possible to place the description for the moment")
+        file1.write("\n")
+        if len(contact_id) == 0 :
+            file1.write("\n")
+        else :
+            file1.write("contact_id = " + contact_id + "\n")
+        if len(user_name) == 0 :
+            file1.write("\n")
+        else :
+            file1.write("user_name = " + user_name + "\n")
+        
+        if len(contact_id) > 0 or len(user_name) > 0 :
+            file1.write("ToBeTreated = True" + "\n")
+
+        file1.close() 
