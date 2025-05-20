@@ -117,7 +117,10 @@ def recoverPBIInformation():
     global created_val
     tools.waitLoadingPageByXPATH2(delay_properties, '/html/body/div[2]/div/div/div[2]/div[2]/div[2]/div/div[1]/div/div[2]/div[2]/div/div[2]/div/div[3]/div[2]/div[5]/div/div[2]/div[1]/div/div[2]/div/div/div/div/input')
     created_val = tools.driver.find_element(By.XPATH, '/html/body/div[2]/div/div/div[2]/div[2]/div[2]/div/div[1]/div/div[2]/div[2]/div/div[2]/div/div[3]/div[2]/div[5]/div/div[2]/div[1]/div/div[2]/div/div/div/div/input').get_attribute("datetime")
-    print ("created_val : " + created_val)
+    if created_val is None:
+        print("created_val is None")
+    else:
+        print("created_val : " + created_val)
 
     # Epic Link
     global epic_link
