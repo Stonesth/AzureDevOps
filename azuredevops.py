@@ -34,7 +34,7 @@ save_path = ""
 pbiTitle = ""
 contact_id = ""
 user_name = ""
-
+boards = ""
 pbi = ""
 
 sprint = ""
@@ -46,14 +46,14 @@ delay_properties = 50
 userInsim = ""
 userInsimPassword = ""
 
-def connectToAzureDevOpsInsim(pbi, userInsim, userInsimPassword) :
+def connectToAzureDevOpsInsim(boards, pbi, userInsim, userInsimPassword) :
     
     # Ouvrir une nouvelle URL dans un nouvel onglet
     tools.driver.execute_script("window.open('');")
     tools.driver.switch_to.window(tools.driver.window_handles[1])
-    tools.driver.get("https://dev.azure.com/NNBE/Training%20Boards%20-%20Team%201/_workitems/edit/" + pbi)
+    tools.driver.get("https://dev.azure.com/NNBE/"+ boards + "/_workitems/edit/" + pbi)
 
-def recoverPBIInformation():
+def recoverPBIInformation(boards):
     # pbiTitle
     global pbiTitle
     tools.waitLoadingPageByXPATH2(delay_properties, '/html/body/div[2]/div/div/div[2]/div[2]/div[2]/div/div[1]/div/div[1]/div[2]/div[2]/div/div[1]/div/input')
@@ -125,7 +125,7 @@ def recoverPBIInformation():
     epic_link = tools.driver.find_element(By.XPATH, '/html/body/div[2]/div/div/div[2]/div[2]/div[2]/div/div[1]/div/div[2]/div[2]/div/div[2]/div/div[3]/div[2]/div[3]/div/div[2]/div/div[2]/div[1]/div[2]/div/div[1]/div[1]/div').text
     print ("epic_link : " + epic_link)
     # Need to go to the epick link
-    tools.driver.get("https://dev.azure.com/NNBE/Training%20Boards%20-%20Team%201/_workitems/edit/" + epic_link)
+    tools.driver.get("https://dev.azure.com/NNBE/"+ boards + "/_workitems/edit/" + epic_link)
     # Wait for the page to load
     tools.waitLoadingPageByXPATH2(delay_properties, '/html/body/div[2]/div/div/div[2]/div[2]/div[2]/div/div[1]/div/div[1]/div[2]/div[2]/div/div[1]/div/input')
 
@@ -139,7 +139,7 @@ def createFolderPBI(pbi) :
     else :
         os.mkdir(save_path + pbi)
 
-def createFileInto(pbi, pbiTitle, description_text, path, name_of_file ) :
+def createFileInto(boards, pbi, pbiTitle, description_text, path, name_of_file ) :
     completeName = os.path.join(save_path + path, name_of_file+".txt")
 
     if os.path.isfile(completeName) :
@@ -154,6 +154,9 @@ def createFileInto(pbi, pbiTitle, description_text, path, name_of_file ) :
         file1.write("\n")    
         file1.write("========================================================================================================================"+"\n")
         file1.write(datetime.now().strftime("%Y-%m-%d %H:%M:%S") + "\n")
+        file1.write("\n")
+        # Plae the link to this PBI
+        file1.write("https://dev.azure.com/NNBE/"+ boards + "/_workitems/edit/" + pbi)
         file1.write("\n")
         file1.write(pbiTitle.encode('utf-8').strip().decode() + "\n")
         file1.write("\n")
