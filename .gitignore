@@ -172,3 +172,8 @@ cython_debug/
 
 # PyPI configuration file
 .pypirc
+
+# Azure DevOps
+#  Azure DevOps specific template is maintained in a separate AzureDevOps.gitignore that can
+#  be found at  
+AzureDevOps

@@ -18,30 +18,30 @@ save_path = os.path.dirname(os.path.abspath("__file__"))[ : -4]
 propertiesFolder_path = save_path + "\\"+ "Properties"
 
 
+
+
+
+
+
+
+
+
+incidentNumber = ""
+incidentTitle = ""
+description_text = ""
 save_path = ""
+
+pbiTitle = ""
+contact_id = ""
+user_name = ""
+
 pbi = ""
 
+sprint = ""
+epic_link = ""
+created_val = ""
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+delay_properties = 10
 
 userInsim = ""
 userInsimPassword = ""
@@ -52,3 +52,75 @@ def connectToAzureDevOpsInsim(pbi, userInsim, userInsimPassword) :
     tools.driver.execute_script("window.open('');")
     tools.driver.switch_to.window(tools.driver.window_handles[1])
     tools.driver.get("https://dev.azure.com/NNBE/Training%20Boards%20-%20Team%201/_workitems/edit/" + pbi)
+
+def recoverPBIInformation():
+    # pbiTitle
+    global pbiTitle
+    tools.waitLoadingPageByXPATH2(delay_properties, '/html/body/div[3]/div/div/div/div/div/div[2]/div[1]/div/div[1]/div[2]/div[2]')
+    time.sleep(1)
+    pbiTitle = tools.driver.find_element(By.XPATH, '/html/body/div[3]/div/div/div/div/div/div[2]/div[1]/div/div[1]/div[2]/div[2]')
+    print("pbiTitle : " + pbiTitle)
+    
+    # incidentNumber
+    global incidentNumber
+    incidentNumber = re.findall(r"[I]{1}\d{4}-{1}\d{5}",pbiTitle)
+    if not incidentNumber:
+        incidentNumber = ""
+    else:
+        incidentNumber = incidentNumber[0]
+    print("incidentNumber : " + incidentNumber)
+    
+    # incidentTitle
+    global incidentTitle
+    if len(incidentNumber) == 0 : 
+        incidentTitle = pbiTitle
+    else : 
+        incidentTitle = pbiTitle[14:]
+    print("incidentTitle : " + incidentTitle)
+
+    # description_text
+    global description_text 
+    tools.waitLoadingPageByXPATH2(delay_properties, '/html/body/div[3]/div/div/div/div/div/div[2]/div[1]/div/div[2]/div[2]/div/div[2]/div/div[1]/div/div/div/div[2]/div/div/div/div/div/div[1]/div')
+    description_text = tools.driver.find_element(By.XPATH, "/html/body/div[3]/div/div/div/div/div/div[2]/div[1]/div/div[2]/div[2]/div/div[2]/div/div[1]/div/div/div/div[2]/div/div/div/div/div/div[1]/div").text.encode('utf-8', 'ignore').decode() # Convertir les bytes en str avant la concaténation
+    try :
+        print("description_text : " + description_text)
+    except UnicodeEncodeError as ex :
+        print("UnicodeEncodeError : ")
+        description_text = "Error to take the description"
+        pass
+
+    # contact_id
+    global contact_id
+    if len(incidentNumber) == 0 : 
+        contact_id = ""
+    else : 
+        contact_id = re.findall(r"\d{7}",pbiTitle)
+        if not contact_id :
+            contact_id = ""
+        else :
+            contact_id = contact_id[0]
+    print("contact_id : " + contact_id)
+
+    # user_name
+    global user_name
+    if len(incidentNumber) == 0 : 
+        user_name = ""
+    else : 
+        user_name = re.findall(r"[a-zA-Z]*[.][a-zA-Z]*",pbiTitle)
+        if not user_name :
+            user_name = ""
+        else :
+            user_name = user_name[0]
+    print("user_name : " + user_name)
+
+    # Epic Link
+    global epic_link
+    tools.waitLoadingPageByXPATH2(delay_properties, '/html/body/div[3]/div[4]/div/div/div/div/div[2]/div[1]/div/div[2]/div[2]/div/div[2]/div/div[3]/div[2]/div[3]/div/div[2]/div/div[2]/div[1]/div[2]/div/div[1]/div[1]')
+    epic_link = tools.driver.find_element(By.XPATH, '/html/body/div[3]/div[4]/div/div/div/div/div[2]/div[1]/div/div[2]/div[2]/div/div[2]/div/div[3]/div[2]/div[3]/div/div[2]/div/div[2]/div[1]/div[2]/div/div[1]/div[1]').text
+    print ("epic_link : " + epic_link)
+
+    # When Jira was created
+    global created_val
+    tools.waitLoadingPageByXPATH2(delay_properties, '/html/body/div[3]/div[4]/div/div/div/div/div[2]/div[1]/div/div[2]/div[2]/div/div[2]/div/div[3]/div[2]/div[5]/div/div[2]/div[1]/div/div[2]/div/div/div/div/input')
+    created_val = tools.driver.find_element(By.XPATH, '/html/body/div[3]/div[4]/div/div/div/div/div[2]/div[1]/div/div[2]/div[2]/div/div[2]/div/div[3]/div[2]/div[5]/div/div[2]/div[1]/div/div[2]/div/div/div/div/input').get_attribute("datetime")
+    print ("created_val : " + created_val)
