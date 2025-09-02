@@ -79,9 +79,9 @@ def recoverPBIInformation(boards):
     print("incidentTitle : " + incidentTitle)
 
     # description_text
-    global description_text 
-    tools.waitLoadingPageByXPATH2(delay_properties, '/html/body/div[2]/div/div/div[2]/div[2]/div[2]/div/div[1]/div/div[2]/div[2]/div/div[2]/div/div[1]/div/div[1]/div/div[2]/div/div/div/div/div/div[1]/div')
-    description_text = tools.driver.find_element(By.XPATH, "/html/body/div[2]/div/div/div[2]/div[2]/div[2]/div/div[1]/div/div[2]/div[2]/div/div[2]/div/div[1]/div/div[1]/div/div[2]/div/div/div/div/div/div[1]/div").text.encode('utf-8', 'ignore').decode() # Convertir les bytes en str avant la concaténation
+    global description_text                          
+    tools.waitLoadingPageByXPATH2(delay_properties, '/html/body/div[2]/div/div/div[2]/div[2]/div[2]/div/div[1]/div/div[3]/div[2]/div/div[2]/div/div[1]/div/div[1]/div/div[2]/div/div/div/div/div/div[1]/div')
+    description_text = tools.driver.find_element(By.XPATH, "/html/body/div[2]/div/div/div[2]/div[2]/div[2]/div/div[1]/div/div[3]/div[2]/div/div[2]/div/div[1]/div/div[1]/div/div[2]/div/div/div/div/div/div[1]/div").text.encode('utf-8', 'ignore').decode() # Convertir les bytes en str avant la concaténation
     try :
         print("description_text : " + description_text)
     except UnicodeEncodeError as ex :
