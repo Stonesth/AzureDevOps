@@ -224,6 +224,12 @@ def createNewPBI(iteration, sprint, caller, incidentTitle, description_text) :
     # //*[@id="__bolt-Ite-ration-input"]
     iteration_field = tools.driver.find_element(By.XPATH, '//*[@id="__bolt-Ite-ration-input"]')
     iteration_field.click()
+
+    # Clean the field
+    iteration_field.send_keys(Keys.CONTROL + "a")
+    iteration_field.send_keys(Keys.DELETE)
+
+    # past the iteration + sprint
     iteration_field.send_keys("Finance\\PI" + iteration + "\\PI" + iteration + sprint)
 
     # Save and Close
