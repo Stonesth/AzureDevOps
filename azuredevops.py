@@ -230,7 +230,7 @@ def createNewPBI(iteration, sprint, caller, incidentTitle, description_text) :
     iteration_field.send_keys(Keys.DELETE)
 
     # past the iteration + sprint
-    iteration_field.send_keys("Finance\\PI" + iteration + "\\PI" + iteration + sprint)
+    iteration_field.send_keys("Finance\\PI" + iteration + "\\PI" + iteration + "." + sprint)
 
     # Save and Close
     # //*[@id="__bolt-save-dialog"]
