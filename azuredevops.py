@@ -178,3 +178,62 @@ def createFileInto(boards, pbi, pbiTitle, description_text, path, name_of_file )
             file1.write("ToBeTreated = True" + "\n")
 
         file1.close() 
+
+def createNewPBI(iteration, sprint, caller, incidentTitle, description_text) :
+
+    # Connect to Azure DevOps Insim (in the Backlogs)
+    # https://dev.azure.com/NNBE/Finance/_backlogs/backlog/Finance%20Boards%20Team/Features?showParents=true&System.AreaPath=IT%20Finance&text=%5B2025.4%5D%20IT%20Finance%20RUN&System.IterationPath=Finance%5CPI2025.4
+    # need to retrieve from properties the iteration (ex: 2025.4)
+    tools.driver.get("https://dev.azure.com/NNBE/Finance/_backlogs/backlog/Finance%20Boards%20Team/Features?showParents=true&System.AreaPath=IT%20Finance&text=%5B" + iteration + "%5D%20IT%20Finance%20RUN&System.IterationPath=Finance%5CPI" + iteration)
+
+    # need to wait the page to be loaded
+    tools.waitLoadingPageByXPATH2(delay_properties, '//*[@id="__bolt-4"]/td[2]/div/button')
+
+    # need to find the + button from the Feature [2025.4] IT Finance RUN
+    # //*[@id="__bolt-4"]/td[2]/div/button
+    button = tools.driver.find_element(By.XPATH, '//*[@id="__bolt-4"]/td[2]/div/button')
+
+    # Click on the + button
+    button.click()
+
+    # need to wait the page to be loaded
+    tools.waitLoadingPageByXPATH2(delay_properties, '//*[@id="__bolt-textfield-input-2"]')
+
+    # Enter the Title
+    # //*[@id="__bolt-textfield-input-2"]
+    title_field = tools.driver.find_element(By.XPATH, '//*[@id="__bolt-textfield-input-2"]')
+    title_field.send_keys(incidentTitle)
+
+    # Select the Assigned to
+    # //*[@id="__bolt-identity-picker-downdown-textfield-5"]
+    assigned_to_field = tools.driver.find_element(By.XPATH, '//*[@id="__bolt-identity-picker-downdown-textfield-5"]')
+    assigned_to_field.click()
+    assigned_to_field.send_keys(caller)
+    time.sleep(1)
+    assigned_to_field.send_keys(Keys.ENTER)
+    time.sleep(1)
+
+    # Description
+    # /html/body/div[3]/div/div/div/div/div/div[2]/div[1]/div/div[2]/div[2]/div/div[2]/div/div[1]/div/div[1]/div/div[2]/div/div/div/div/div/div[1]
+    description_field = tools.driver.find_element(By.XPATH, '/html/body/div[3]/div/div/div/div/div/div[2]/div[1]/div/div[2]/div[2]/div/div[2]/div/div[1]/div/div[1]/div/div[2]/div/div/div/div/div/div[1]')
+    description_field.click()
+    description_field.send_keys(description_text)
+
+    # Iteration
+    # ex : Finance\PI2025.4\PI2025.4.2
+    # //*[@id="__bolt-Ite-ration-input"]
+    iteration_field = tools.driver.find_element(By.XPATH, '//*[@id="__bolt-Ite-ration-input"]')
+    iteration_field.click()
+    iteration_field.send_keys("Finance\\PI" + iteration + "\\PI" + iteration + sprint)
+
+    # Save and Close
+    # //*[@id="__bolt-save-dialog"]
+    # save_button = tools.driver.find_element(By.XPATH, '//*[@id="__bolt-save-dialog"]')
+    # save_button.click()
+
+
+
+# # Test createNewPBI
+# tools.openBrowserChrome()
+# createNewPBI("2025.4", ".2", "JF30LB", "Test from automation", "This is a test from automation to create a new PBI in Azure DevOps")
+# time.sleep(5)
