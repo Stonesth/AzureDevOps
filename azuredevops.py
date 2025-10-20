@@ -234,8 +234,8 @@ def createNewPBI(iteration, sprint, caller, incidentTitle, description_text) :
 
     # Save and Close
     # //*[@id="__bolt-save-dialog"]
-    # save_button = tools.driver.find_element(By.XPATH, '//*[@id="__bolt-save-dialog"]')
-    # save_button.click()
+    save_button = tools.driver.find_element(By.XPATH, '//*[@id="__bolt-save-dialog"]')
+    save_button.click()
 
 
 
