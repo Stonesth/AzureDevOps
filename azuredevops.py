@@ -253,8 +253,12 @@ def findCreatedPBIID(incidentTitle) :
     # //*[@id="l1-search-input"]
     search_box = tools.driver.find_element(By.XPATH, '//*[@id="l1-search-input"]')
     search_box.send_keys(incidentTitle)
-    search_box.send_keys(Keys.ENTER)
-
+    # click on the first item of the list to validate the search
+    # //*[@id="__bolt-instant-search-menu"]/tbody/tr[4]/td[4]/div/span[2]
+    first_item = tools.driver.find_element(By.XPATH, '//*[@id="__bolt-instant-search-menu"]/tbody/tr[4]/td[4]/div/span[2]')
+    first_item.click()
+    time.sleep(1)
+    
     # need to wait the page to be loaded
     tools.waitLoadingPageByXPATH2(delay_properties, '//*[@id="__bolt-4"]/td[2]/div/button')
     time.sleep(2)
