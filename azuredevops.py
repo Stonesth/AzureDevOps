@@ -249,14 +249,22 @@ def findCreatedPBIID(incidentTitle) :
 
     # Need to find the created PBI ID
     # ex : RUN - INC4-12345 - Test from automation
-    pbi_elements = tools.driver.find_elements(By.CLASS_NAME, 'bolt-table-cell-title')
-    for pbi_element in pbi_elements:
-        if incidentTitle in pbi_element.text:
-            pbi_id = pbi_element.get_attribute("data-work-item-id")
-            print("Found PBI ID: " + pbi_id)
-            return pbi_id
-    print("PBI ID not found.")
-    return None 
+    # Need to used the search box to find the created PBI
+    # //*[@id="l1-search-input"]
+    search_box = tools.driver.find_element(By.XPATH, '//*[@id="l1-search-input"]')
+    search_box.send_keys(incidentTitle)
+    search_box.send_keys(Keys.ENTER)
+
+    # need to wait the page to be loaded
+    tools.waitLoadingPageByXPATH2(delay_properties, '//*[@id="__bolt-4"]/td[2]/div/button')
+    time.sleep(2)
+
+    # Need to find the PBI ID on the page
+    # /html/body/div[3]/div/div/div/div/div/div[2]/div[1]/div/div[1]/div[2]/div[2]/text()
+    pbi_id_element = tools.driver.find_element(By.XPATH, '/html/body/div[3]/div/div/div/div/div/div[2]/div[1]/div/div[1]/div[2]/div[2]/text()')
+    pbi_id = pbi_id_element.strip()
+    print("Found PBI ID: " + pbi_id)
+    return pbi_id
 
 
 # # Test createNewPBI
