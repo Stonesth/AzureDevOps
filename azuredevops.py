@@ -240,9 +240,6 @@ def createNewPBI(iteration, sprint, caller, incidentTitle, description_text) :
 # Need to find in Azure DevOps the created PBI ID and return the PBI ID
 # a.findCreatedPBIID("RUN - " + sn.incident_change_id + " - " + sn.incidentTitle)
 def findCreatedPBIID(incidentTitle) :
-    # Need to refresh the page
-    tools.driver.refresh()  
-
     # need to wait the page to be loaded
     tools.waitLoadingPageByXPATH2(delay_properties, '//*[@id="__bolt-4"]/td[2]/div/button')
     time.sleep(2)
@@ -265,8 +262,8 @@ def findCreatedPBIID(incidentTitle) :
 
     # Need to find the PBI ID on the page
     # /html/body/div[3]/div/div/div/div/div/div[2]/div[1]/div/div[1]/div[2]/div[2]/text()
-    tools.waitLoadingPageByXPATH2(delay_properties, '/html/body/div[3]/div/div/div/div/div/div[2]/div[1]/div/div[1]/div[2]/div[2]/text()')
-    pbi_id_element = tools.driver.find_element(By.XPATH, '/html/body/div[3]/div/div/div/div/div/div[2]/div[1]/div/div[1]/div[2]/div[2]/text()')
+    tools.waitLoadingPageByXPATH2(delay_properties, '/html/body/div[3]/div/div/div/div/div/div[2]/div[1]/div/div[1]/div[2]/div[2]')
+    pbi_id_element = tools.driver.find_element(By.XPATH, '/html/body/div[3]/div/div/div/div/div/div[2]/div[1]/div/div[1]/div[2]/div[2]')
     pbi_id = pbi_id_element.strip()
     print("Found PBI ID: " + pbi_id)
     return pbi_id
