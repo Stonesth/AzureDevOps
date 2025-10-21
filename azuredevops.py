@@ -259,9 +259,9 @@ def findCreatedPBIID(incidentTitle) :
     time.sleep(1)
 
     # check if the title of the opened PBI is the same as the searched one
-    # //*[@id="__bolt-textfield-input-279"]
-    tools.waitLoadingPageByXPATH2(delay_properties, '//*[@id="__bolt-textfield-input-279"]')
-    opened_title = tools.driver.find_element(By.XPATH, '//*[@id="__bolt-textfield-input-279"]').get_attribute("value")
+    # //*[@id="__bolt-textfield-input-2"]
+    tools.waitLoadingPageByXPATH2(delay_properties, '//*[@id="__bolt-textfield-input-2"]')
+    opened_title = tools.driver.find_element(By.XPATH, '//*[@id="__bolt-textfield-input-2"]').get_attribute("value")
     if opened_title != incidentTitle :
         print("Error: The opened PBI title does not match the searched title.")
         return ""
