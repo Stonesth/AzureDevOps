@@ -199,7 +199,7 @@ def createNewPBI(iteration, sprint, caller, incidentTitle, description_text) :
     # Need to select the Product Backlog Item
     # Not possible to find directly the xpath of the Product Backlog Item
     # So we need to use the keyboard to select the Product Backlog Item, press the tab 1 time and then press the down arrow 1 time
-    time.sleep(1)
+    time.sleep(10)
     button.send_keys(Keys.ARROW_DOWN)
     button.send_keys(Keys.ARROW_DOWN)
     time.sleep(10)
