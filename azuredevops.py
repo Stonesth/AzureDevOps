@@ -187,11 +187,11 @@ def createNewPBI(iteration, sprint, caller, incidentTitle, description_text) :
     tools.driver.get("https://dev.azure.com/NNBE/Finance/_backlogs/backlog/Finance%20Boards%20Team/Features?showParents=true&System.AreaPath=IT%20Finance&text=%5B" + iteration + "%5D%20IT%20Finance%20RUN")
 
     # need to wait the page to be loaded
-    tools.waitLoadingPageByXPATH2(delay_properties, '//*[@id="__bolt-4"]/td[2]/div/button')
+    tools.waitLoadingPageByXPATH2(delay_properties, '//*[@id="__bolt-4"]/td[5]/div/a')
 
     # need to find the + button from the Feature [2025.4] IT Finance RUN
-    # //*[@id="__bolt-4"]/td[2]/div/button
-    button = tools.driver.find_element(By.XPATH, '//*[@id="__bolt-4"]/td[2]/div/button')
+    # //*[@id="__bolt-4"]/td[5]/div/a
+    button = tools.driver.find_element(By.XPATH, '//*[@id="__bolt-4"]/td[5]/div/a')
 
     # Click on the + button
     button.click()
