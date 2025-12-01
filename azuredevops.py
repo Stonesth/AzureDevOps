@@ -190,11 +190,16 @@ def createNewPBI(iteration, sprint, caller, incidentTitle, description_text) :
     tools.waitLoadingPageByXPATH2(delay_properties, '//*[@id="__bolt-4"]/td[5]/div/a')
 
     # need to find the + button from the Feature [2025.4] IT Finance RUN
-    # //*[@id="__bolt-4"]/td[5]/div/a
+    # //*[@id="__bolt-4"]/td[2]/div/button
     button = tools.driver.find_element(By.XPATH, '//*[@id="__bolt-4"]/td[5]/div/a')
 
     # Click on the + button
     button.click()
+
+    time.sleep(20)
+    # Need to select the Product Backlog Item
+    # 
+
 
     # need to wait the page to be loaded
     tools.waitLoadingPageByXPATH2(delay_properties, '//*[@id="__bolt-textfield-input-2"]')
@@ -203,7 +208,6 @@ def createNewPBI(iteration, sprint, caller, incidentTitle, description_text) :
     # //*[@id="__bolt-textfield-input-2"]
     title_field = tools.driver.find_element(By.XPATH, '//*[@id="__bolt-textfield-input-2"]')
     title_field.send_keys(incidentTitle)
-    time.sleep(1)
 
     # Select the Assigned to
     # //*[@id="__bolt-identity-picker-downdown-textfield-5"]
