@@ -203,7 +203,7 @@ def createNewPBI(iteration, sprint, caller, incidentTitle, description_text) :
     # Attendre et cliquer sur "Product Backlog Item"
     wait = WebDriverWait(tools.driver, 10)
     pbi_button = wait.until(EC.element_to_be_clickable(
-        (By.XPATH, "//li[@role='presentation']//button[contains(@class, 'bolt-menuitem')]//span[text()='Product Backlog Item']")
+        (By.XPATH, "//button[@role='menuitem'][.//span[text()='Product Backlog Item']]")
     ))
     pbi_button.click()
     
