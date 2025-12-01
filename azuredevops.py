@@ -203,6 +203,7 @@ def createNewPBI(iteration, sprint, caller, incidentTitle, description_text) :
     # //*[@id="__bolt-textfield-input-2"]
     title_field = tools.driver.find_element(By.XPATH, '//*[@id="__bolt-textfield-input-2"]')
     title_field.send_keys(incidentTitle)
+    time.sleep(1)
 
     # Select the Assigned to
     # //*[@id="__bolt-identity-picker-downdown-textfield-5"]
