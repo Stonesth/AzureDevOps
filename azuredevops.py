@@ -200,11 +200,12 @@ def createNewPBI(iteration, sprint, caller, incidentTitle, description_text) :
     # Not possible to find directly the xpath of the Product Backlog Item
     # So we need to use the keyboard to select the Product Backlog Item, 
     # press the tab 1 time and then press the down arrow 1 time in one time.
-    time.sleep(1)
-    button.send_keys(Keys.TAB + Keys.ARROW_DOWN)
-    time.sleep(1)
-    button.send_keys(Keys.ENTER)
-    time.sleep(2)
+    # Attendre et cliquer sur "Product Backlog Item"
+    wait = WebDriverWait(tools.driver, 10)
+    pbi_button = wait.until(EC.element_to_be_clickable(
+        (By.XPATH, "//button[.//span[text()='Product Backlog Item']]")
+    ))
+    pbi_button.click()
     
     # need to wait the page to be loaded
     tools.waitLoadingPageByXPATH2(delay_properties, '//*[@id="__bolt-textfield-input-2"]')
