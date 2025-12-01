@@ -201,7 +201,7 @@ def createNewPBI(iteration, sprint, caller, incidentTitle, description_text) :
     # So we need to use the keyboard to select the Product Backlog Item, 
     # press the tab 1 time and then press the down arrow 1 time in one time.
     time.sleep(1)
-    button.send_keys(Keys.TAB + Keys.ARROW_DOWN + Keys.ARROW_DOWN)
+    button.send_keys(Keys.TAB + Keys.ARROW_DOWN)
     time.sleep(1)
     button.send_keys(Keys.ENTER)
     time.sleep(2)
