@@ -268,9 +268,11 @@ def createNewPBI(iteration, sprint, caller, incidentTitle, description_text) :
 
 
     # Need to select the parent feature
-    # //*[@id="__bolt-Related-Work1765962977066"]/div/div[2]/span
-    tools.waitLoadingPageByXPATH2(delay_properties, '//*[@id="__bolt-Related-Work1765962977066"]/div/div[2]/span')
-    parent_feature_field = tools.driver.find_element(By.XPATH, '//*[@id="__bolt-Related-Work1765962977066"]/div/div[2]/span')
+    # Like for the description need to find a way to select the text area.
+    # Because the id is changing all the time.
+    # /html/body/div[2]/div/div/div[2]/div[2]/div[2]/div/div[1]/div/div[2]/div[2]/div/div[2]/div/div[3]/div[2]/div[3]/div/div[2]/div/div[2]/span
+    tools.waitLoadingPageByXPATH2(delay_properties, '/html/body/div[2]/div/div/div[2]/div[2]/div[2]/div/div[1]/div/div[2]/div[2]/div/div[2]/div/div[3]/div[2]/div[3]/div/div[2]/div/div[2]/span')
+    parent_feature_field = tools.driver.find_element(By.XPATH, '/html/body/div[2]/div/div/div[2]/div[2]/div[2]/div/div[1]/div/div[2]/div[2]/div/div[2]/div/div[3]/div[2]/div[3]/div/div[2]/div/div[2]/span')
     parent_feature_field.click()
 
     # enter the feature
