@@ -299,9 +299,9 @@ def createNewPBI(iteration, sprint, caller, incidentTitle, description_text) :
     
 
     # Save and Close
-    # //*[@id="__bolt-save-dialog"]
-    tools.waitLoadingPageByXPATH2(delay_properties, '//*[@id="__bolt-save-dialog"]')
-    save_button = tools.driver.find_element(By.XPATH, '//*[@id="__bolt-save-dialog"]')
+    # //*[@id="__bolt-save"]
+    tools.waitLoadingPageByXPATH2(delay_properties, '//*[@id="__bolt-save"]')
+    save_button = tools.driver.find_element(By.XPATH, '//*[@id="__bolt-save"]')
     save_button.click()
 
 # Need to find in Azure DevOps the created PBI ID and return the PBI ID
