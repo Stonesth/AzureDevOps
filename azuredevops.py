@@ -274,6 +274,7 @@ def createNewPBI(iteration, sprint, caller, incidentTitle, description_text) :
     tools.waitLoadingPageByXPATH2(delay_properties, '/html/body/div[2]/div/div/div[2]/div[2]/div[2]/div/div[1]/div/div[2]/div[2]/div/div[2]/div/div[3]/div[2]/div[3]/div/div[2]/div/div[2]/span')
     parent_feature_field = tools.driver.find_element(By.XPATH, '/html/body/div[2]/div/div/div[2]/div[2]/div[2]/div/div[1]/div/div[2]/div[2]/div/div[2]/div/div[3]/div[2]/div[3]/div/div[2]/div/div[2]/span')
     parent_feature_field.click()
+    time.sleep(1)
 
     # enter the feature
     # Need to find the input field
