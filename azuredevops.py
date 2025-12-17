@@ -287,7 +287,16 @@ def createNewPBI(iteration, sprint, caller, incidentTitle, description_text) :
     parent_feature_input.send_keys("IT Finance RUN")
     # press ENTER
     parent_feature_input.send_keys(Keys.ENTER)
+
+    # Click on the Add Link button
+    # Need to wait the Add Link button to be clickable
+    # //*[@id="__bolt-dialog-1"]/div[2]/div/div[3]/div[5]/div/button[1]/span
+    # /html/body/div[3]/div/div/div/div[2]/div/div[3]/div[5]/div/button[1]/span
+    tools.waitLoadingPageByXPATH2(delay_properties, '/html/body/div[3]/div/div/div/div[2]/div/div[3]/div[5]/div/button[1]/span')
+    add_link_button = tools.driver.find_element(By.XPATH, '/html/body/div[3]/div/div/div/div[2]/div/div[3]/div[5]/div/button[1]/span')
+    add_link_button.click()
     
+
     # Save and Close
     # //*[@id="__bolt-save-dialog"]
     tools.waitLoadingPageByXPATH2(delay_properties, '//*[@id="__bolt-save-dialog"]')
