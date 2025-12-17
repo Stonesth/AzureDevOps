@@ -287,7 +287,8 @@ def createNewPBI(iteration, sprint, caller, incidentTitle, description_text) :
     parent_feature_input.send_keys("IT Finance RUN")
     # press ENTER
     parent_feature_input.send_keys(Keys.ENTER)
-
+    time.sleep(1)
+    
     # Click on the Add Link button
     # Need to wait the Add Link button to be clickable
     # //*[@id="__bolt-dialog-1"]/div[2]/div/div[3]/div[5]/div/button[1]/span
