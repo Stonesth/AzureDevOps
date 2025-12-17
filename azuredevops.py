@@ -233,6 +233,7 @@ def createNewPBI(iteration, sprint, caller, incidentTitle, description_text) :
 
     # Select the Assigned to
     # //*[@id="__bolt-identity-picker-downdown-textfield-5"]
+    tools.waitLoadingPageByXPATH2(delay_properties, '//*[@id="__bolt-identity-picker-downdown-textfield-5"]')
     assigned_to_field = tools.driver.find_element(By.XPATH, '//*[@id="__bolt-identity-picker-downdown-textfield-5"]')
     assigned_to_field.click()
     assigned_to_field.send_keys(caller)
@@ -242,6 +243,7 @@ def createNewPBI(iteration, sprint, caller, incidentTitle, description_text) :
 
     # Description
     # //*[@id="__bolt-Description1765962977058"]/div/div/div/div[1]/div/div[1]
+    tools.waitLoadingPageByXPATH2(delay_properties, '//*[@id="__bolt-Description1765962977058"]/div/div/div/div[1]/div/div[1]')
     description_field = tools.driver.find_element(By.XPATH, '//*[@id="__bolt-Description1765962977058"]/div/div/div/div[1]/div/div[1]')
     description_field.click()
     description_field.send_keys(description_text)
@@ -249,6 +251,7 @@ def createNewPBI(iteration, sprint, caller, incidentTitle, description_text) :
     # Iteration
     # ex : Finance\PI2025.4\PI2025.4.2
     # //*[@id="__bolt-Ite-ration-input"]
+    tools.waitLoadingPageByXPATH2(delay_properties, '//*[@id="__bolt-Ite-ration-input"]')
     iteration_field = tools.driver.find_element(By.XPATH, '//*[@id="__bolt-Ite-ration-input"]')
     iteration_field.click()
 
@@ -261,11 +264,13 @@ def createNewPBI(iteration, sprint, caller, incidentTitle, description_text) :
 
     # Need to select the parent feature
     # //*[@id="__bolt-Related-Work1765962977066"]/div/div[2]/span
+    tools.waitLoadingPageByXPATH2(delay_properties, '//*[@id="__bolt-Related-Work1765962977066"]/div/div[2]/span')
     parent_feature_field = tools.driver.find_element(By.XPATH, '//*[@id="__bolt-Related-Work1765962977066"]/div/div[2]/span')
     parent_feature_field.click()
 
-    # enter the caller (feature)
+    # enter the feature
     # //*[@id="__bolt-textfield-input-107"]
+    tools.waitLoadingPageByXPATH2(delay_properties, '//*[@id="__bolt-textfield-input-107"]')
     parent_feature_input = tools.driver.find_element(By.XPATH, '//*[@id="__bolt-textfield-input-107"]')
     # IT%20Finance&text=%5B" + iteration + "%5D%20IT%20Finance%20RUN
     parent_feature_input.send_keys("IT Finance RUN")
@@ -274,6 +279,7 @@ def createNewPBI(iteration, sprint, caller, incidentTitle, description_text) :
     
     # Save and Close
     # //*[@id="__bolt-save-dialog"]
+    tools.waitLoadingPageByXPATH2(delay_properties, '//*[@id="__bolt-save-dialog"]')
     save_button = tools.driver.find_element(By.XPATH, '//*[@id="__bolt-save-dialog"]')
     save_button.click()
 
