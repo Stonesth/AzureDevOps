@@ -181,34 +181,50 @@ def createFileInto(boards, pbi, pbiTitle, description_text, path, name_of_file )
 
 def createNewPBI(iteration, sprint, caller, incidentTitle, description_text) :
 
-    # Connect to Azure DevOps Insim (in the Backlogs)
-    # https://dev.azure.com/NNBE/Finance/_backlogs/backlog/Finance%20Boards%20Team/Features?showParents=true&System.AreaPath=IT%20Finance&text=%5B2025.4%5D%20IT%20Finance%20RUN&System.IterationPath=Finance%5CPI2025.4
-    # need to retrieve from properties the iteration (ex: 2025.4)
-    tools.driver.get("https://dev.azure.com/NNBE/Finance/_backlogs/backlog/Finance%20Boards%20Team/Features?showParents=true&System.AreaPath=IT%20Finance&text=%5B" + iteration + "%5D%20IT%20Finance%20RUN")
+    # # Connect to Azure DevOps Insim (in the Backlogs)
+    # # https://dev.azure.com/NNBE/Finance/_backlogs/backlog/Finance%20Boards%20Team/Features?showParents=true&System.AreaPath=IT%20Finance&text=%5B2025.4%5D%20IT%20Finance%20RUN&System.IterationPath=Finance%5CPI2025.4
+    # # need to retrieve from properties the iteration (ex: 2025.4)
+    # tools.driver.get("https://dev.azure.com/NNBE/Finance/_backlogs/backlog/Finance%20Boards%20Team/Features?showParents=true&System.AreaPath=IT%20Finance&text=%5B" + iteration + "%5D%20IT%20Finance%20RUN")
 
-    # need to wait the page to be loaded
-    tools.waitLoadingPageByXPATH2(delay_properties, '//*[@id="__bolt-menu-button-83"]')
+    # # need to wait the page to be loaded
+    # tools.waitLoadingPageByXPATH2(delay_properties, '//*[@id="__bolt-menu-button-83"]')
 
-    # need to find the + button from the Feature [2025.4] IT Finance RUN
-    # //*[@id="__bolt-4"]/td[2]/div/button
-    button = tools.driver.find_element(By.XPATH, '//*[@id="__bolt-menu-button-83"]')
-    # Click on the + button
-    button.click()
+    # # need to find the + button from the Feature
+    # # //*[@id="__bolt-4"]/td[7]/div/a
+    # button = tools.driver.find_element(By.XPATH, '//*[@id="__bolt-4"]/td[7]/div/a')
+    # # Click on the + button
+    # button.click()
 
-    # Need to select the Product Backlog Item
-    # Not possible to find directly the xpath of the Product Backlog Item
-    # So we need to use the keyboard to select the Product Backlog Item, 
-    # press the tab 1 time and then press the down arrow 1 time in one time.
-    # Attendre et cliquer sur "Product Backlog Item"
-    wait = WebDriverWait(tools.driver, 10)
-    pbi_button = wait.until(EC.element_to_be_clickable(
-        (By.XPATH, "//*[@role='menuitem' and contains(., 'Product Backlog Item')]")
-    ))
-    pbi_button.click()
+    # # Wait for the menu to be loaded
+    # tools.waitLoadingPageByXPATH2(delay_properties, '//*[@id="__bolt-menu-button-85"]')
+    # # Click on the Add Link button
+    # add_link_button = tools.driver.find_element(By.XPATH, '//*[@id="__bolt-menu-button-85"]')
+    # add_link_button.click()
+
+
+
+
+    # # Need to select the Product Backlog Item
+    # # Not possible to find directly the xpath of the Product Backlog Item
+    # # So we need to use the keyboard to select the Product Backlog Item, 
+    # # press the tab 1 time and then press the down arrow 1 time in one time.
+    # # Attendre et cliquer sur "Product Backlog Item"
+    # wait = WebDriverWait(tools.driver, 10)
+    # pbi_button = wait.until(EC.element_to_be_clickable(
+    #     (By.XPATH, "//*[@role='menuitem' and contains(., 'Product Backlog Item')]")
+    # ))
+    # pbi_button.click()
     
-    # need to wait the page to be loaded
-    tools.waitLoadingPageByXPATH2(delay_properties, '//*[@id="__bolt-textfield-input-2"]')
+    # # need to wait the page to be loaded
+    # tools.waitLoadingPageByXPATH2(delay_properties, '//*[@id="__bolt-textfield-input-2"]')
 
+    # Fill the form to create a new PBI
+    # go to this url to create a new PBI directly
+    # https://dev.azure.com/NNBE/Finance/_workitems/create/Product%20Backlog%20Item
+    tools.driver.get("https://dev.azure.com/NNBE/Finance/_workitems/create/Product%20Backlog%20Item")
+    # need to wait the page to be loaded
+    tools.waitLoadingPageByXPATH2(delay_properties, '//*[@id="skip-to-main-content"]')
+    
     # Enter the Title
     # //*[@id="__bolt-textfield-input-2"]
     title_field = tools.driver.find_element(By.XPATH, '//*[@id="__bolt-textfield-input-2"]')
@@ -242,6 +258,19 @@ def createNewPBI(iteration, sprint, caller, incidentTitle, description_text) :
     # past the iteration + sprint
     iteration_field.send_keys("Finance\\PI" + iteration + "\\PI" + iteration + "." + sprint)
 
+    # Need to select the parent feature
+    # //*[@id="__bolt-Related-Work1765962977066"]/div/div[2]/span
+    parent_feature_field = tools.driver.find_element(By.XPATH, '//*[@id="__bolt-Related-Work1765962977066"]/div/div[2]/span')
+    parent_feature_field.click()
+
+    # enter the caller (feature)
+    # //*[@id="__bolt-textfield-input-107"]
+    parent_feature_input = tools.driver.find_element(By.XPATH, '//*[@id="__bolt-textfield-input-107"]')
+    # IT%20Finance&text=%5B" + iteration + "%5D%20IT%20Finance%20RUN
+    parent_feature_input.send_keys("IT Finance RUN")
+    # press ENTER
+    parent_feature_input.send_keys(Keys.ENTER)
+    
     # Save and Close
     # //*[@id="__bolt-save-dialog"]
     save_button = tools.driver.find_element(By.XPATH, '//*[@id="__bolt-save-dialog"]')
