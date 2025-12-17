@@ -276,9 +276,12 @@ def createNewPBI(iteration, sprint, caller, incidentTitle, description_text) :
     parent_feature_field.click()
 
     # enter the feature
-    # //*[@id="__bolt-textfield-input-107"]
-    tools.waitLoadingPageByXPATH2(delay_properties, '//*[@id="__bolt-textfield-input-107"]')
-    parent_feature_input = tools.driver.find_element(By.XPATH, '//*[@id="__bolt-textfield-input-107"]')
+    # Need to find the input field
+    # Like for the description need to find a way to select the text area.
+    # Because the id is changing all the time.
+    # /html/body/div[3]/div/div/div/div[2]/div/div[3]/div[3]/div/div/div[2]/div/div/input
+    tools.waitLoadingPageByXPATH2(delay_properties, '/html/body/div[3]/div/div/div/div[2]/div/div[3]/div[3]/div/div/div[2]/div/div/input')
+    parent_feature_input = tools.driver.find_element(By.XPATH, '/html/body/div[3]/div/div/div/div[2]/div/div[3]/div[3]/div/div/div[2]/div/div/input')
     # IT%20Finance&text=%5B" + iteration + "%5D%20IT%20Finance%20RUN
     parent_feature_input.send_keys("IT Finance RUN")
     # press ENTER
