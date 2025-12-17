@@ -226,14 +226,14 @@ def createNewPBI(iteration, sprint, caller, incidentTitle, description_text) :
     tools.waitLoadingPageByXPATH2(delay_properties, '//*[@id="skip-to-main-content"]')
     
     # Enter the Title
-    # //*[@id="__bolt-textfield-input-78"]
-    tools.waitLoadingPageByXPATH2(delay_properties, '//*[@id="__bolt-textfield-input-78"]')
-    title_field = tools.driver.find_element(By.XPATH, '//*[@id="__bolt-textfield-input-78"]')
+    # //*[@id="__bolt-textfield-input-1"]
+    tools.waitLoadingPageByXPATH2(delay_properties, '//*[@id="__bolt-textfield-input-1"]')
+    title_field = tools.driver.find_element(By.XPATH, '//*[@id="__bolt-textfield-input-1"]')
     title_field.send_keys(incidentTitle)
 
     # Select the Assigned to
-    # //*[@id="__bolt-identity-picker-downdown-textfield-17"]
-    assigned_to_field = tools.driver.find_element(By.XPATH, '//*[@id="__bolt-identity-picker-downdown-textfield-17"]')
+    # //*[@id="__bolt-identity-picker-downdown-textfield-5"]
+    assigned_to_field = tools.driver.find_element(By.XPATH, '//*[@id="__bolt-identity-picker-downdown-textfield-5"]')
     assigned_to_field.click()
     assigned_to_field.send_keys(caller)
     time.sleep(1)
