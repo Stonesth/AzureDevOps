@@ -254,6 +254,8 @@ def createNewPBI(iteration, sprint, caller, incidentTitle, description_text) :
 
     # past the iteration + sprint
     iteration_field.send_keys("Finance\\PI" + iteration + "\\PI" + iteration + "." + sprint)
+    iteration_field.send_keys(Keys.ENTER)
+    
 
     # Description 
     # For the description need to find a way to select the text area.
