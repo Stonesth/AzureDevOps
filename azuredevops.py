@@ -226,13 +226,14 @@ def createNewPBI(iteration, sprint, caller, incidentTitle, description_text) :
     tools.waitLoadingPageByXPATH2(delay_properties, '//*[@id="skip-to-main-content"]')
     
     # Enter the Title
-    # //*[@id="__bolt-textfield-input-2"]
-    title_field = tools.driver.find_element(By.XPATH, '//*[@id="__bolt-textfield-input-2"]')
+    # //*[@id="__bolt-textfield-input-78"]
+    tools.waitLoadingPageByXPATH2(delay_properties, '//*[@id="__bolt-textfield-input-78"]')
+    title_field = tools.driver.find_element(By.XPATH, '//*[@id="__bolt-textfield-input-78"]')
     title_field.send_keys(incidentTitle)
 
     # Select the Assigned to
-    # //*[@id="__bolt-identity-picker-downdown-textfield-5"]
-    assigned_to_field = tools.driver.find_element(By.XPATH, '//*[@id="__bolt-identity-picker-downdown-textfield-5"]')
+    # //*[@id="__bolt-identity-picker-downdown-textfield-17"]
+    assigned_to_field = tools.driver.find_element(By.XPATH, '//*[@id="__bolt-identity-picker-downdown-textfield-17"]')
     assigned_to_field.click()
     assigned_to_field.send_keys(caller)
     time.sleep(1)
@@ -240,8 +241,8 @@ def createNewPBI(iteration, sprint, caller, incidentTitle, description_text) :
     time.sleep(1)
 
     # Description
-    # /html/body/div[3]/div/div/div/div/div/div[2]/div[1]/div/div[2]/div[2]/div/div[2]/div/div[1]/div/div[1]/div/div[2]/div/div/div/div/div/div[1]
-    description_field = tools.driver.find_element(By.XPATH, '/html/body/div[3]/div/div/div/div/div/div[2]/div[1]/div/div[2]/div[2]/div/div[2]/div/div[1]/div/div[1]/div/div[2]/div/div/div/div/div/div[1]')
+    # //*[@id="__bolt-Description1765962977058"]/div/div/div/div[1]/div/div[1]
+    description_field = tools.driver.find_element(By.XPATH, '//*[@id="__bolt-Description1765962977058"]/div/div/div/div[1]/div/div[1]')
     description_field.click()
     description_field.send_keys(description_text)
 
