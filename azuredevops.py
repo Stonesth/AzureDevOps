@@ -242,9 +242,9 @@ def createNewPBI(iteration, sprint, caller, incidentTitle, description_text) :
     time.sleep(1)
 
     # Description
-    # //*[@id="__bolt-Description1765962977058"]/div/div/div/div[1]/div/div[1]
-    tools.waitLoadingPageByXPATH2(delay_properties, '//*[@id="__bolt-Description1765962977058"]/div/div/div/div[1]/div/div[1]')
-    description_field = tools.driver.find_element(By.XPATH, '//*[@id="__bolt-Description1765962977058"]/div/div/div/div[1]/div/div[1]')
+    # //*[@id="__bolt-Description1765965027887"]/div/div/div/div/div/div[1]
+    tools.waitLoadingPageByXPATH2(delay_properties, '//*[@id="__bolt-Description1765965027887"]/div/div/div/div/div/div[1]')
+    description_field = tools.driver.find_element(By.XPATH, '//*[@id="__bolt-Description1765965027887"]/div/div/div/div/div/div[1]')
     description_field.click()
     description_field.send_keys(description_text)
 
