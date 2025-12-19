@@ -354,6 +354,18 @@ def findCreatedPBIID(incidentTitle) :
     print("Found PBI ID: " + pbi_id)
     return pbi_id
 
+# Récupère l'ID du PBI directement depuis la page de création après sauvegarde
+def findCreatedPBIID2() :
+    # Attendre que la page soit chargée après la sauvegarde
+    # //*[@id="skip-to-main-content"]/div/div[1]/div/div[1]/div[2]/div[2]
+    tools.waitLoadingPageByXPATH2(delay_properties, '//*[@id="skip-to-main-content"]/div/div[1]/div/div[1]/div[2]/div[2]')
+    time.sleep(1)
+    
+    # Récupérer l'ID du PBI depuis le xpath
+    pbi_id_element = tools.driver.find_element(By.XPATH, '//*[@id="skip-to-main-content"]/div/div[1]/div/div[1]/div[2]/div[2]')
+    pbi_id = pbi_id_element.text.strip()
+    print("Found PBI ID from creation page: " + pbi_id)
+    return pbi_id
 
 # # Test createNewPBI
 # tools.openBrowserChrome()
