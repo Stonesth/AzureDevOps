@@ -51,7 +51,12 @@ def connectToAzureDevOpsInsim(boards, pbi, userInsim, userInsimPassword) :
     # Ouvrir une nouvelle URL dans un nouvel onglet
     tools.driver.execute_script("window.open('');")
     tools.driver.switch_to.window(tools.driver.window_handles[1])
-    tools.driver.get("https://dev.azure.com/NNBE/"+ boards + "/_workitems/edit/" + pbi)
+    
+    # Si pbi est None, aller vers la page de création de PBI
+    if pbi is None:
+        tools.driver.get("https://dev.azure.com/NNBE/" + boards + "/_workitems/create/Product%20Backlog%20Item")
+    else:
+        tools.driver.get("https://dev.azure.com/NNBE/"+ boards + "/_workitems/edit/" + pbi)
 
 def recoverPBIInformation(boards):
     # pbiTitle
