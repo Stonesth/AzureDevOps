@@ -184,6 +184,17 @@ def createFileInto(boards, pbi, pbiTitle, description_text, path, name_of_file )
 
         file1.close() 
 
+def cleanTextForSelenium(text):
+    """
+    Remove emojis and characters outside BMP (Basic Multilingual Plane)
+    that ChromeDriver cannot handle
+    """
+    if text is None:
+        return ""
+    # Remove characters outside BMP (emojis, etc.)
+    cleaned_text = ''.join(char for char in text if ord(char) < 0x10000)
+    return cleaned_text
+
 def createNewPBI(iteration, sprint, caller, incidentTitle, description_text) :
 
     # # Connect to Azure DevOps Insim (in the Backlogs)
@@ -230,11 +241,15 @@ def createNewPBI(iteration, sprint, caller, incidentTitle, description_text) :
     # need to wait the page to be loaded
     tools.waitLoadingPageByXPATH2(delay_properties, '//*[@id="skip-to-main-content"]')
     
+    # Clean title and description from emojis and unsupported characters
+    clean_title = cleanTextForSelenium(incidentTitle)
+    clean_description = cleanTextForSelenium(description_text)
+    
     # Enter the Title
     # //*[@id="__bolt-textfield-input-1"]
     tools.waitLoadingPageByXPATH2(delay_properties, '//*[@id="__bolt-textfield-input-1"]')
     title_field = tools.driver.find_element(By.XPATH, '//*[@id="__bolt-textfield-input-1"]')
-    title_field.send_keys(incidentTitle)
+    title_field.send_keys(clean_title)
 
     # Select the Assigned to
     # //*[@id="__bolt-identity-picker-downdown-textfield-5"]
@@ -269,7 +284,7 @@ def createNewPBI(iteration, sprint, caller, incidentTitle, description_text) :
     tools.waitLoadingPageByXPATH2(delay_properties, '/html/body/div[2]/div/div/div[2]/div[2]/div[2]/div/div[1]/div/div[2]/div[2]/div/div[2]/div/div[1]/div/div[1]/div/div[2]/div/div/div/div/div/div[1]')
     description_field = tools.driver.find_element(By.XPATH, '/html/body/div[2]/div/div/div[2]/div[2]/div[2]/div/div[1]/div/div[2]/div[2]/div/div[2]/div/div[1]/div/div[1]/div/div[2]/div/div/div/div/div/div[1]')
     description_field.click()
-    description_field.send_keys(description_text)
+    description_field.send_keys(clean_description)
 
 
     # Need to select the parent feature
