@@ -20,7 +20,7 @@ propertiesFolder_path = save_path + "\\"+ "Properties"
 
 
 
-feature_IT_FINANCE_RUN = tools.readProperty(propertiesFolder_path, 'azuredevops', 'feature_IT_FINANCE_RUN=')
+feature_IT_FINANCE_RUN = tools.readProperty(propertiesFolder_path, 'AzureDevOps', 'feature_IT_FINANCE_RUN=')
 
 
 
