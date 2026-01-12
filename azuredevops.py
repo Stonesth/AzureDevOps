@@ -13,8 +13,8 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 
 # -11 for the name of this project azuredevops
-#save_path = dirname(__file__)[ : -11]
-save_path = os.path.dirname(os.path.abspath("__file__"))[ : -11]
+save_path = dirname(__file__)[ : -11]
+#save_path = os.path.dirname(os.path.abspath("__file__"))[ : -11]
 propertiesFolder_path = save_path + "\\"+ "Properties"
 
 
