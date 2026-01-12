@@ -20,7 +20,7 @@ propertiesFolder_path = save_path + "\\"+ "Properties"
 
 
 
-
+feature_IT_FINANCE_RUN = tools.readProperty(propertiesFolder_path, 'azuredevops', 'feature_IT_FINANCE_RUN=')
 
 
 
@@ -304,7 +304,7 @@ def createNewPBI(iteration, sprint, caller, incidentTitle, description_text) :
     tools.waitLoadingPageByXPATH2(delay_properties, '/html/body/div[3]/div/div/div/div[2]/div/div[3]/div[3]/div/div/div[2]/div/div/input')
     parent_feature_input = tools.driver.find_element(By.XPATH, '/html/body/div[3]/div/div/div/div[2]/div/div[3]/div[3]/div/div/div[2]/div/div/input')
     # IT%20Finance&text=%5B" + iteration + "%5D%20IT%20Finance%20RUN
-    parent_feature_input.send_keys("IT Finance RUN")
+    parent_feature_input.send_keys(feature_IT_FINANCE_RUN)
     time.sleep(1)
     # press ENTER
     parent_feature_input.send_keys(Keys.ENTER)
