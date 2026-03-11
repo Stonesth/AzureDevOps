@@ -262,7 +262,7 @@ def createNewPBI(iteration, sprint, caller, incidentTitle, description_text) :
     time.sleep(1)
 
     # Iteration
-    # ex : Finance\PI2025.4\PI2025.4.2
+    # ex : Finance\2026\PI2026.1\PI2026.1.7
     # //*[@id="__bolt-Ite-ration-input"]
     tools.waitLoadingPageByXPATH2(delay_properties, '//*[@id="__bolt-Ite-ration-input"]')
     iteration_field = tools.driver.find_element(By.XPATH, '//*[@id="__bolt-Ite-ration-input"]')
@@ -273,7 +273,8 @@ def createNewPBI(iteration, sprint, caller, incidentTitle, description_text) :
     iteration_field.send_keys(Keys.DELETE)
 
     # past the iteration + sprint
-    iteration_field.send_keys("Finance\\PI" + iteration + "\\PI" + iteration + "." + sprint)
+    year = iteration.split('.')[0]
+    iteration_field.send_keys("Finance\\" + year + "\\PI" + iteration + "." + sprint)
     time.sleep(1)
     iteration_field.send_keys(Keys.ENTER)
     time.sleep(1)
