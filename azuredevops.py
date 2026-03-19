@@ -284,11 +284,12 @@ def createNewPBI(iteration, sprint, caller, incidentTitle, description_text) :
     # Because the id is changing all the time.
     # /html/body/div[2]/div/div/div[2]/div[2]/div[2]/div/div[1]/div/div[2]/div[2]/div/div[2]/div/div[1]/div/div[1]/div/div[2]/div/div/div/div/div/div[1]
     # /html/body/div[2]/div/div/div[2]/div[2]/div[2]/div/div[1]/div/div[2]/div[2]/div/div[2]/div/div[1]/div/div[1]/div/div[2]/div/div/div/div/div -- since the 19-06-2026
-    time.sleep(10)
+    time.sleep(50)
     
     tools.waitLoadingPageByXPATH2(delay_properties, '/html/body/div[2]/div/div/div[2]/div[2]/div[2]/div/div[1]/div/div[2]/div[2]/div/div[2]/div/div[1]/div/div[1]/div/div[2]/div/div/div/div/div')
     description_field = tools.driver.find_element(By.XPATH, '/html/body/div[2]/div/div/div[2]/div[2]/div[2]/div/div[1]/div/div[2]/div[2]/div/div[2]/div/div[1]/div/div[1]/div/div[2]/div/div/div/div/div')
     description_field.click()
+    time.sleep(50)
     description_field.send_keys(clean_description)
 
 
