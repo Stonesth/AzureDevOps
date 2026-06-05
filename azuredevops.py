@@ -326,6 +326,14 @@ def createNewPBI(iteration, sprint, caller, incidentTitle, description_text) :
     add_link_button = tools.driver.find_element(By.XPATH, '/html/body/div[3]/div/div/div/div[2]/div/div[3]/div[5]/div/button[1]/span')
     add_link_button.click()
     
+    # Need to wait 1 second to be sure that the link is added before saving the PBI
+    time.sleep(1)
+
+    # Need to place 0 into the field Estimation (//*[@id="__bolt-Estimation-input"])
+    tools.waitLoadingPageByXPATH2(delay_properties, '//*[@id="__bolt-Estimation-input"]')
+    estimation_field = tools.driver.find_element(By.XPATH, '//*[@id="__bolt-Estimation-input"]')
+    estimation_field.click()
+    time.sleep(1)
 
     # Save and Close
     # //*[@id="__bolt-save"]
