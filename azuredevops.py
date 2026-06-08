@@ -334,6 +334,9 @@ def createNewPBI(iteration, sprint, caller, incidentTitle, description_text) :
     estimation_field = tools.driver.find_element(By.XPATH, '//*[@id="__bolt-Estimation-input"]')
     estimation_field.click()
     time.sleep(1)
+    estimation_field.send_keys("0")
+    time.sleep(1)
+    
 
     # Save and Close
     # //*[@id="__bolt-save"]
