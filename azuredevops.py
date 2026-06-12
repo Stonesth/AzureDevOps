@@ -292,9 +292,9 @@ def createNewPBI(iteration, sprint, caller, incidentTitle, description_text) :
 
     # tools.waitLoadingPageByXPATH2(delay_properties, '/html/body/div[2]/div/div/div[2]/div[2]/div[2]/div/div[1]/div/div[2]/div[2]/div/div[2]/div/div[1]/div/div[1]/div/div[2]/div/div/div/div[1]/div/div/div/textarea[2]')
     # description_field = tools.driver.find_element(By.XPATH, '/html/body/div[2]/div/div/div[2]/div[2]/div[2]/div/div[1]/div/div[2]/div[2]/div/div[2]/div/div[1]/div/div[1]/div/div[2]/div/div/div/div[1]/div/div/div/textarea[2]')                                        
-    tools.waitLoadingPageByXPATH2(delay_properties, '/html/body/div[2]/div/div/div[2]/div[2]/div[2]/div/div[1]/div/div[2]/div[2]/div/div[2]/div/div[1]/div/div[1]/div/div[2]/div/div/div/div[1]/div/div[1]')
-    description_field = tools.driver.find_element(By.XPATH, '/html/body/div[2]/div/div/div[2]/div[2]/div[2]/div/div[1]/div/div[2]/div[2]/div/div[2]/div/div[1]/div/div[1]/div/div[2]/div/div/div/div[1]/div/div[1]')
-    time.sleep(20)
+    tools.waitLoadingPageByID2(delay_properties, "__bolt-textfield-input-29")
+    description_field = tools.driver.find_element(By.ID, "__bolt-textfield-input-29")
+
     description_field.click()
     description_field.send_keys(clean_description)
 
