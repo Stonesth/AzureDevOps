@@ -11,6 +11,7 @@ from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
+from selenium.common.exceptions import ElementClickInterceptedException
 
 # -11 for the name of this project azuredevops
 save_path = dirname(__file__)[ : -11]
@@ -329,15 +330,23 @@ def createNewPBI(iteration, sprint, caller, incidentTitle, description_text) :
     tools.waitLoadingPageByXPATH2(delay_properties, '/html/body/div[3]/div/div/div/div[2]/div/div[3]/div[5]/div/button[1]/span')
     add_link_button = tools.driver.find_element(By.XPATH, '/html/body/div[3]/div/div/div/div[2]/div/div[3]/div[5]/div/button[1]/span')
     add_link_button.click()
-    
-    # Need to wait 1 second to be sure that the link is added before saving the PBI
-    time.sleep(1)
+
+    # Wait until the Add Link callout overlay is fully dismissed before interacting with fields below.
+    WebDriverWait(tools.driver, delay_properties).until(
+        EC.invisibility_of_element_located((By.CSS_SELECTOR, 'div.absolute-fill.bolt-light-dismiss.bolt-callout-modal'))
+    )
 
     # Need to place 0 into the field Estimation (//*[@id="__bolt-Estimation-input"])
-    tools.waitLoadingPageByXPATH2(delay_properties, '//*[@id="__bolt-Estimation-input"]')
-    estimation_field = tools.driver.find_element(By.XPATH, '//*[@id="__bolt-Estimation-input"]')
-    estimation_field.click()
+    estimation_field = WebDriverWait(tools.driver, delay_properties).until(
+        EC.element_to_be_clickable((By.ID, '__bolt-Estimation-input'))
+    )
+    tools.driver.execute_script("arguments[0].scrollIntoView({block: 'center'});", estimation_field)
+    try:
+        estimation_field.click()
+    except ElementClickInterceptedException:
+        tools.driver.execute_script('arguments[0].click();', estimation_field)
     time.sleep(1)
+    estimation_field.send_keys(Keys.CONTROL + "a")
     estimation_field.send_keys("0")
     time.sleep(1)
     
