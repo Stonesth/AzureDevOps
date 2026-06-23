@@ -277,7 +277,8 @@ def createNewPBI(iteration, sprint, caller, incidentTitle, description_text) :
 
     # past the iteration + sprint
     year = iteration.split('.')[0]
-    iteration_field.send_keys("Finance\\" + year + "\\PI" + iteration +  "\\PI" + iteration + "." + sprint)
+    # iteration_field.send_keys("Finance\\" + "\\PI" + iteration +  "\\PI" + iteration + "." + sprint)
+    iteration_field.send_keys("Finance\\PI" + iteration +  "\\PI" + iteration + "." + sprint)
     time.sleep(1)
     iteration_field.send_keys(Keys.ENTER)
     time.sleep(1)
