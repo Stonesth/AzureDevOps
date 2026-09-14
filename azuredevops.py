@@ -72,16 +72,19 @@ def recoverPBIInformation(boards):
     """
     Recover PBI information (title, description, created date, epic link, ...).
 
-    Tries the browser/Selenium scraping first (kept for backward compatibility).
-    If Azure DevOps has changed its page structure and the scraping fails
-    (stale XPath, timeout, missing element, ...), automatically falls back
-    to the Azure DevOps REST API (requires AZURE_DEVOPS_PAT env var).
+    Goes straight to the Azure DevOps REST API (requires AZURE_DEVOPS_PAT env
+    var) since the browser/Selenium scraping has become unreliable (Azure
+    DevOps page structure changes break the hardcoded XPath selectors).
+
+    recoverPBIInformationViaBrowser(boards) is kept available below in case
+    the API path ever needs to be bypassed again, but it is no longer called
+    by default.
     """
     try:
-        recoverPBIInformationViaBrowser(boards)
-    except (NoSuchElementException, TimeoutException, WebDriverException) as ex:
-        print("Browser scraping failed (" + str(ex).splitlines()[0] + ") - falling back to Azure DevOps REST API")
         recoverPBIInformationViaAPI(boards, pbi)
+    except RuntimeError as ex:
+        print("Azure DevOps API call failed (" + str(ex).splitlines()[0] + ") - falling back to browser scraping")
+        recoverPBIInformationViaBrowser(boards)
 
 
 def recoverPBIInformationViaBrowser(boards):
