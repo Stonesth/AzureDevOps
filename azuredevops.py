@@ -3,6 +3,11 @@
 import os
 import re # regular expression
 import time
+import json
+import base64
+import html
+import urllib.request
+import urllib.error
 
 from Tools import tools_v000 as tools
 from os.path import dirname
@@ -12,6 +17,10 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.common.exceptions import ElementClickInterceptedException
+from selenium.common.exceptions import NoSuchElementException, TimeoutException, WebDriverException
+
+# Azure DevOps organization used for both the browser flow and the REST API fallback
+AZURE_DEVOPS_ORGANIZATION = "NNBE"
 
 # -11 for the name of this project azuredevops
 save_path = dirname(__file__)[ : -11]
@@ -60,6 +69,22 @@ def connectToAzureDevOpsInsim(boards, pbi, userInsim, userInsimPassword) :
         tools.driver.get("https://dev.azure.com/NNBE/"+ boards + "/_workitems/edit/" + pbi)
 
 def recoverPBIInformation(boards):
+    """
+    Recover PBI information (title, description, created date, epic link, ...).
+
+    Tries the browser/Selenium scraping first (kept for backward compatibility).
+    If Azure DevOps has changed its page structure and the scraping fails
+    (stale XPath, timeout, missing element, ...), automatically falls back
+    to the Azure DevOps REST API (requires AZURE_DEVOPS_PAT env var).
+    """
+    try:
+        recoverPBIInformationViaBrowser(boards)
+    except (NoSuchElementException, TimeoutException, WebDriverException) as ex:
+        print("Browser scraping failed (" + str(ex).splitlines()[0] + ") - falling back to Azure DevOps REST API")
+        recoverPBIInformationViaAPI(boards, pbi)
+
+
+def recoverPBIInformationViaBrowser(boards):
     # pbiTitle
     global pbiTitle
     tools.waitLoadingPageByXPATH2(delay_properties, '/html/body/div[2]/div/div/div[2]/div[2]/div[2]/div/div[1]/div/div[1]/div[2]/div[2]/div/div[1]/div/input')
@@ -140,6 +165,105 @@ def recoverPBIInformation(boards):
     # Epic Title
     epic_link = tools.driver.find_element(By.XPATH, '/html/body/div[2]/div/div/div[2]/div[2]/div[2]/div/div[1]/div/div[1]/div[2]/div[2]/div/div[1]/div/input').get_attribute("value")
     print ("epic_link : " + epic_link)
+
+
+def _azureDevOpsApiRequest(url):
+    """
+    Perform an authenticated GET against the Azure DevOps REST API using the
+    AZURE_DEVOPS_PAT environment variable (Basic auth, empty username).
+    Returns the parsed JSON body. Raises RuntimeError on failure.
+    """
+    pat = os.environ.get("AZURE_DEVOPS_PAT")
+    if not pat:
+        raise RuntimeError(
+            "AZURE_DEVOPS_PAT environment variable is not set. "
+            "Create a PAT (Work Items Read scope) at "
+            "https://dev.azure.com/" + AZURE_DEVOPS_ORGANIZATION + "/_usersSettings/tokens "
+            "and set it with: [Environment]::SetEnvironmentVariable('AZURE_DEVOPS_PAT', '<token>', 'User')"
+        )
+
+    token = base64.b64encode((":" + pat).encode("utf-8")).decode("ascii")
+    request = urllib.request.Request(url)
+    request.add_header("Authorization", "Basic " + token)
+    request.add_header("Accept", "application/json")
+
+    try:
+        with urllib.request.urlopen(request, timeout=30) as response:
+            return json.loads(response.read().decode("utf-8"))
+    except urllib.error.HTTPError as ex:
+        raise RuntimeError("Azure DevOps API error " + str(ex.code) + " calling " + url + " : " + ex.read().decode("utf-8", "ignore"))
+    except urllib.error.URLError as ex:
+        raise RuntimeError("Azure DevOps API unreachable calling " + url + " : " + str(ex.reason))
+
+
+def _stripHtml(rawHtml):
+    """Convert an Azure DevOps rich-text (HTML) field to plain text."""
+    if not rawHtml:
+        return ""
+    text = re.sub(r"<br\s*/?>", "\n", rawHtml, flags=re.IGNORECASE)
+    text = re.sub(r"</p>", "\n", text, flags=re.IGNORECASE)
+    text = re.sub(r"<[^>]+>", "", text)
+    return html.unescape(text).strip()
+
+
+def recoverPBIInformationViaAPI(boards, pbi):
+    """
+    Fallback for recoverPBIInformation(): fetches the PBI (and its parent
+    Epic/Feature, if any) directly from the Azure DevOps REST API instead of
+    scraping the work item edit page with Selenium.
+
+    Requires the AZURE_DEVOPS_PAT environment variable (Work Items Read scope).
+    Populates the same module-level globals as recoverPBIInformationViaBrowser()
+    so the rest of the script (createFileInto, MyHours update, ...) keeps working
+    regardless of which path was used.
+    """
+    global pbiTitle, incidentNumber, incidentTitle, description_text
+    global contact_id, user_name, created_val, epic_link
+
+    base_url = "https://dev.azure.com/" + AZURE_DEVOPS_ORGANIZATION + "/" + boards + "/_apis/wit/workitems/"
+    item = _azureDevOpsApiRequest(base_url + str(pbi) + "?$expand=relations&api-version=7.0")
+    fields = item.get("fields", {})
+
+    pbiTitle = fields.get("System.Title", "")
+    print("pbiTitle (API) : " + pbiTitle)
+
+    incidentNumber = re.findall(r"[I]{1}\d{4}-{1}\d{5}", pbiTitle)
+    incidentNumber = incidentNumber[0] if incidentNumber else ""
+    print("incidentNumber (API) : " + incidentNumber)
+
+    incidentTitle = pbiTitle if len(incidentNumber) == 0 else pbiTitle[14:]
+    print("incidentTitle (API) : " + incidentTitle)
+
+    description_text = _stripHtml(fields.get("System.Description", ""))
+    try:
+        print("description_text (API) : " + description_text)
+    except UnicodeEncodeError:
+        print("UnicodeEncodeError on print (description_text is still valid)")
+
+    if len(incidentNumber) == 0:
+        contact_id = ""
+        user_name = ""
+    else:
+        contact_id_match = re.findall(r"\d{7}", pbiTitle)
+        contact_id = contact_id_match[0] if contact_id_match else ""
+        user_name_match = re.findall(r"[a-zA-Z]*[.][a-zA-Z]*", pbiTitle)
+        user_name = user_name_match[0] if user_name_match else ""
+    print("contact_id (API) : " + contact_id)
+    print("user_name (API) : " + user_name)
+
+    created_val = fields.get("System.CreatedDate", "")
+    print("created_val (API) : " + created_val)
+
+    # Epic/Feature link: find the parent relation, then fetch its title
+    epic_link = ""
+    for relation in item.get("relations", []) or []:
+        if relation.get("rel") == "System.LinkTypes.Hierarchy-Reverse":
+            parent_url = relation.get("url", "")
+            parent = _azureDevOpsApiRequest(parent_url + "?api-version=7.0")
+            epic_link = parent.get("fields", {}).get("System.Title", "")
+            break
+    print("epic_link (API) : " + epic_link)
+
 
 def createFolderPBI(pbi) :
     if os.path.isdir(save_path + pbi) :
