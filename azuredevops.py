@@ -199,6 +199,39 @@ def _azureDevOpsApiRequest(url):
         raise RuntimeError("Azure DevOps API unreachable calling " + url + " : " + str(ex.reason))
 
 
+def _azureDevOpsApiWrite(url, patch_document, method="PATCH"):
+    """
+    Perform an authenticated write (PATCH to update, POST to create) against
+    the Azure DevOps REST API using a JSON Patch document (work item fields
+    and/or relations API). Uses the AZURE_DEVOPS_PAT environment variable
+    (Basic auth, empty username). Returns the parsed JSON body of the updated
+    / created work item. Raises RuntimeError on failure.
+    """
+    pat = os.environ.get("AZURE_DEVOPS_PAT")
+    if not pat:
+        raise RuntimeError(
+            "AZURE_DEVOPS_PAT environment variable is not set. "
+            "Create a PAT (Work Items Read & Write scope) at "
+            "https://dev.azure.com/" + AZURE_DEVOPS_ORGANIZATION + "/_usersSettings/tokens "
+            "and set it with: [Environment]::SetEnvironmentVariable('AZURE_DEVOPS_PAT', '<token>', 'User')"
+        )
+
+    token = base64.b64encode((":" + pat).encode("utf-8")).decode("ascii")
+    data = json.dumps(patch_document).encode("utf-8")
+    request = urllib.request.Request(url, data=data, method=method)
+    request.add_header("Authorization", "Basic " + token)
+    request.add_header("Content-Type", "application/json-patch+json")
+    request.add_header("Accept", "application/json")
+
+    try:
+        with urllib.request.urlopen(request, timeout=30) as response:
+            return json.loads(response.read().decode("utf-8"))
+    except urllib.error.HTTPError as ex:
+        raise RuntimeError("Azure DevOps API error " + str(ex.code) + " calling " + url + " : " + ex.read().decode("utf-8", "ignore"))
+    except urllib.error.URLError as ex:
+        raise RuntimeError("Azure DevOps API unreachable calling " + url + " : " + str(ex.reason))
+
+
 def _stripHtml(rawHtml):
     """Convert an Azure DevOps rich-text (HTML) field to plain text."""
     if not rawHtml:
@@ -207,6 +240,23 @@ def _stripHtml(rawHtml):
     text = re.sub(r"</p>", "\n", text, flags=re.IGNORECASE)
     text = re.sub(r"<[^>]+>", "", text)
     return html.unescape(text).strip()
+
+
+def updateActualsAndCompleteViaAPI(boards, pbi, actual_story_points):
+    """
+    Set the "Actual Story Points" field (Custom.ActualStoryPoints) and move
+    the work item to the "Done" state via the Azure DevOps REST API, instead
+    of scraping/clicking the PBI edit page (used by LogWorkPBI).
+    """
+    url = "https://dev.azure.com/" + AZURE_DEVOPS_ORGANIZATION + "/" + boards + "/_apis/wit/workitems/" + str(pbi) + "?api-version=7.0"
+    patch_document = [
+        {"op": "add", "path": "/fields/Custom.ActualStoryPoints", "value": actual_story_points},
+        {"op": "add", "path": "/fields/System.State", "value": "Done"},
+    ]
+    result = _azureDevOpsApiWrite(url, patch_document, method="PATCH")
+    print("PBI " + str(pbi) + " updated via API - Actual Story Points : " + str(actual_story_points) + " / State : Done")
+    return result
+
 
 
 def recoverPBIInformationViaAPI(boards, pbi):
@@ -326,6 +376,53 @@ def cleanTextForSelenium(text):
     return cleaned_text
 
 def createNewPBI(iteration, sprint, caller, incidentTitle, description_text) :
+    """
+    Create a new Product Backlog Item ("RUN" item, linked to feature_IT_FINANCE_RUN).
+
+    Goes through the Azure DevOps REST API by default (returns the new PBI ID
+    directly - no need to scrape the page afterward). Falls back to the
+    browser flow (createNewPBIViaBrowser) if the API call fails, in which
+    case the caller still needs to resolve the ID via findCreatedPBIID /
+    findCreatedPBIID2 like before, and this function returns None.
+    """
+    try:
+        return createNewPBIViaAPI(iteration, sprint, caller, incidentTitle, description_text)
+    except RuntimeError as ex:
+        print("Azure DevOps API call failed (" + str(ex).splitlines()[0] + ") - falling back to browser scraping")
+        createNewPBIViaBrowser(iteration, sprint, caller, incidentTitle, description_text)
+        return None
+
+
+def createNewPBIViaAPI(iteration, sprint, caller, incidentTitle, description_text) :
+    """
+    Create a new Product Backlog Item directly via the Azure DevOps REST API
+    (project "Finance", same as the browser flow), linked as a child of the
+    feature_IT_FINANCE_RUN feature. Returns the new PBI ID (str).
+    """
+    clean_title = cleanTextForSelenium(incidentTitle)
+    clean_description = cleanTextForSelenium(description_text)
+    iteration_path = "Finance\\PI" + iteration + "\\PI" + iteration + "." + sprint
+
+    patch_document = [
+        {"op": "add", "path": "/fields/System.Title", "value": clean_title},
+        {"op": "add", "path": "/fields/System.Description", "value": clean_description},
+        {"op": "add", "path": "/fields/System.IterationPath", "value": iteration_path},
+        {"op": "add", "path": "/fields/System.AssignedTo", "value": caller},
+        {"op": "add", "path": "/fields/Microsoft.VSTS.Scheduling.StoryPoints", "value": 0},
+        {"op": "add", "path": "/relations/-", "value": {
+            "rel": "System.LinkTypes.Hierarchy-Reverse",
+            "url": "https://dev.azure.com/" + AZURE_DEVOPS_ORGANIZATION + "/_apis/wit/workItems/" + str(feature_IT_FINANCE_RUN),
+        }},
+    ]
+
+    url = "https://dev.azure.com/" + AZURE_DEVOPS_ORGANIZATION + "/Finance/_apis/wit/workitems/$Product%20Backlog%20Item?api-version=7.0"
+    result = _azureDevOpsApiWrite(url, patch_document, method="POST")
+    new_pbi_id = str(result.get("id"))
+    print("PBI " + new_pbi_id + " created via API : " + clean_title)
+    return new_pbi_id
+
+
+def createNewPBIViaBrowser(iteration, sprint, caller, incidentTitle, description_text) :
 
     # # Connect to Azure DevOps Insim (in the Backlogs)
     # # https://dev.azure.com/NNBE/Finance/_backlogs/backlog/Finance%20Boards%20Team/Features?showParents=true&System.AreaPath=IT%20Finance&text=%5B2025.4%5D%20IT%20Finance%20RUN&System.IterationPath=Finance%5CPI2025.4
